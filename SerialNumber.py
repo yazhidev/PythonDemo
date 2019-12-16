@@ -1,28 +1,4 @@
-import openpyxl
-import os
-from openpyxl import Workbook
-
-
-def get_workbook(fileName):
-    if not os.path.exists(fileName):
-        wb = openpyxl.Workbook()
-    else:
-        wb = openpyxl.load_workbook(fileName)
-    return wb
-
-
-def get_sheet(wb: Workbook, sheetName):
-    if not wb.sheetnames.__contains__(sheetName):
-        wb.create_sheet(title=sheetName)
-
-    return wb.get_sheet_by_name(sheetName)
-
-def add_2_sheet(content):
-    excelFileName = 'test.xlsx'
-    sheetName = "testSheetName"
-
-    wb = get_workbook(excelFileName)
-    get_sheet(wb, sheetName).append([content])
+from LocalStorage import Excel
 
 
 def get_communication_number():
@@ -56,7 +32,8 @@ def get_voltage_type():
 
 
 def get_number():
-    return '1'
+    number = db.get_latest_number()
+    return str(number).rjust(6, '0')
 
 
 def generate_series_number():
@@ -64,9 +41,11 @@ def generate_series_number():
     print('============================================')
     print('生成序列号：' + series_number)
     print('============================================')
+    db.record(series_number)
 
+
+
+db = Excel()
 
 while True:
     generate_series_number()
-
-add_2_sheet()
